@@ -47,5 +47,32 @@ class CarsParser:
         response = cfr.get(url=url, headers=self.headers, cookies=self.cookies, impersonate="chrome120")
         generations_html = response.text
         return generations_html
+    
+    
+    def scrape_types_generations(self, type_car_link) -> str:
+        """ 
+        Example of link : /en/acura-nsx-ii-coupe-generation-5712
+        Extracts Specs for all nested types of generations of {model of car(Acura NSX)}:  Acura NSX II Coupe, Acura NSX I and returns html object as string
+        """
         
+        url = f"{self.base_url}{type_car_link}"
+        print(url)
+        response = cfr.get(url=url, headers=self.headers, cookies=self.cookies, impersonate="chrome120")
+        type_generations_html = response.text
+        return type_generations_html
         
+    def scrape_car_info(self, nested_types) -> str:
+        """ 
+        Example of link : en/aston-martin-db6-mark-ii-4.0-330hp-24185
+        Extracts all info about car: 
+        Brand	Aston Martin
+        Model 	DB6
+        Generation 	DB6 Mark II
+        ...
+        """
+
+        url = f"{self.base_url}{nested_types}"
+        print(url)
+        response = cfr.get(url=url, headers=self.headers, cookies=self.cookies, impersonate="chrome120")
+        info_html = response.text
+        return info_html
