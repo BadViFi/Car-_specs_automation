@@ -65,7 +65,7 @@ def get_raw_info(info_html) -> dict:
     """ 
     Get and extract all needed info about car: barnd, model, generation..,
     """
-    info = {}
+    info = []
     soup = BeautifulSoup(info_html, "html.parser")
 
     table = soup.find("table", class_="cardetailsout car2")
@@ -81,45 +81,45 @@ def get_raw_info(info_html) -> dict:
             v = value.get_text(" ", strip=True)
 
             if "Brand" in k:
-                info["Brand"] = v
+                info.append(v)
 
             elif "Model" in k:
-                info["Model"] = v
+                info.append(v)
 
             elif "Generation" in k:
-                info["Generation"] = v
+                info.append(v)
 
             elif "Start of production" in k:
-                info["Production Years"] = v
+                info.append(v)
 
             elif "Power" in k:
                 hp = re.search(r"(\d+)\s*Hp", v)
                 if hp:
-                    info["Horsepower"] = int(hp.group(1))
-                info["Engine Specs"] = info.get("Engine Specs", "") + f" Power: {v};"
+                    info.append(hp.group(1))
+                info.append(v)
 
             elif "Torque" in k:
                 tq = re.search(r"(\d+)\s*Nm", v)
                 if tq:
-                    info["Torque"] = int(tq.group(1))
-                info["Engine Specs"] = info.get("Engine Specs", "") + f" Torque: {v};"
+                    info.append(tq.group(1))
+                info.append(v)
 
             elif "Fuel Type" in k:
-                info["Fuel Type"] = v
+                info.append(v)
 
             elif "Number of gears" in k:
-                info["Transmission"] = v
+                info.append(v) 
 
             elif "Drive wheel" in k:
-                info["Drive Type"] = v
+                info.append(v)
 
             elif "Body type" in k:
-                info["Body Type"] = v
+                info.append(v)
 
     script_text = " ".join([s.get_text() for s in soup.find_all("script")])
     bigs = re.findall(r'bigs\[\d+\]\s*=\s*"([^"]+)"', script_text)
     base_url = "https://www.auto-data.net/images/"
-    info["Image URLs"] = {
+    info.append({
         "images": [base_url + x for x in bigs[:3]],
-    }
+    })
     return info
